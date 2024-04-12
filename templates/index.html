@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Book Mart</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="all_books/assets/css/main.css" />
+	</head>
+	<body class="homepage is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<section id="header">
+
+					<!-- Logo -->
+						<h1><a href="{{ url_for('home') }}">Book Mart</a></h1>
+
+					<!-- Nav -->
+					{% include "navbar.html" %}
+
+
+					<!-- Banner -->
+						<section id="banner">
+							<header>
+								<h2>Welcome to Book Mart</h2>
+								<p>An online shop for all kinds of books</p>
+							</header>
+						</section>
+
+					<!-- Intro -->
+
+
+				</section>
+
+			<!-- Main -->
+				<section id="main">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+
+								<!-- Books -->
+									<section>
+										<header class="major">
+											<h2>Books</h2>
+											<form action="/" method="post">
+												<input type="text" name="book_name" placeholder="Search your favourite book here">
+												<button style="margin-top: 25px;" type="submit">Search</button>
+											</form>
+										</header>
+										<div class="row">
+											{% for book in books: %}
+											<div class="col-4 col-6-medium col-12-small">
+												<section class="box">
+													<a href="{{ url_for('show_single_book',id=book['id']) }}" class="image featured"><img src="{{ book['volumeInfo']['imageLinks']['smallThumbnail'] }}" alt="" /></a>
+													<header>
+														<h3>{{ book['volumeInfo']['title'] }}</h3>
+													</header>
+													<p>{{ book['volumeInfo']['description'][:156] }}....</p>
+													<footer>
+														<ul class="actions">
+															<li><a href="{{ url_for('show_single_book',id=book['id']) }}" class="button alt">Open</a></li>
+														</ul>
+													</footer>
+												</section>
+											</div>
+											{% endfor %}
+										</div>
+									</section>
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+
+								<!-- Copyright -->
+									<div id="copyright">
+										<ul class="links">
+											<li>&copy; Book Mart {{year}}</li>
+										</ul>
+									</div>
+
+							</div>
+				</section>
+		</div>
+
+		<!-- Scripts -->
+			<script src="all_books/assets/js/jquery.min.js"></script>
+			<script src="all_books/assets/js/jquery.dropotron.min.js"></script>
+			<script src="all_books/assets/js/browser.min.js"></script>
+			<script src="all_books/assets/js/breakpoints.min.js"></script>
+			<script src="all_books/assets/js/util.js"></script>
+			<script src="all_books/assets/js/main.js"></script>
+
+	</body>
+</html>

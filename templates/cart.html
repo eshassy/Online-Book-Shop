@@ -1,0 +1,165 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Cart</title>
+
+
+
+    <!-- Bootstrap core CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <!-- Favicons -->
+<meta name="theme-color" content="#7952b3">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+  </head>
+  <body>
+
+  <header>
+    {% include 'navbar.html' %}
+  </header>
+<main>
+
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+         <h1 class="fw-light">Your Shopping Cart</h1>
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="badge bg-primary rounded-pill">{{ cart | length }}</span>
+        </h4>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Total Books</h6>
+            </div>
+            <span class="text-muted">{{ cart | length }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Total Amount</h6>
+            </div>
+            <span class="text-muted">&#36; {{ total_price }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Tax applied</h6>
+            </div>
+            <span class="text-muted">5% on total amount</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+              <h6 class="my-0">Promo code</h6>
+              <small>BOOKLOVE</small>
+            </div>
+            <span class="text-success">− &#36; 1</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Payable Amount</span>
+            {% if cart | length != 0: %}
+            <strong>&#36; {{ payable_amount }}</strong>
+            {% else: %}
+            <strong>&#36; 0</strong>
+            {% endif %}
+          </li>
+        </ul>
+        {% if cart | length == 0: %}
+        <div class="alert alert-danger" role="alert">
+                <p>Payable amount should be greater than &#36; 10 for making payment </p>
+            </div>
+
+        <button class="btn btn-primary my-2" disabled="true">Make Payment</button>
+        {% else: %}
+        <button class="btn btn-primary my-2" id="checkout-button" >Make Payment</button>
+        {% endif %}
+          <a href="{{ url_for('home') }}" class="btn btn-secondary my-2">Return to Home page</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="album py-5 bg-light">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for item in cart: %}
+        <div class="col">
+          <div class="card shadow-sm">
+            <img class="bd-placeholder-img card-img-top" width="100%" src="{{ item.image }}" />
+
+            <div class="card-body">
+              <p class="card-text">{{ item.title }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a href="{{ url_for('delete_item', id=item.id) }}">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Delete from cart</button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+  </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script type="text/javascript">
+      // Create an instance of the Stripe object with your publishable API key
+      var stripe = Stripe('{{ public_key }}');
+      var checkoutButton = document.getElementById('checkout-button');
+
+      checkoutButton.addEventListener('click', function() {
+        fetch('/create-checkout-session', {
+          method: 'POST',
+        })
+        .then(function(response) {
+          var data = response.json()
+          return data;
+        })
+        .then(function(session) {
+          return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function(result) {
+          if (result.error) {
+            alert(result.error.message);
+          }
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+      });
+    </script>
+  </body>
+</html>

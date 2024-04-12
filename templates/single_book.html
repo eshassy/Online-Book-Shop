@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Book Mart</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<link rel="stylesheet" href="single_book/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="single_book/assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+						{% include "navbar.html" %}
+
+
+		<!-- Header -->
+			<header id="header">
+				<div class="content">
+					<h2><a href="#">{{ book['volumeInfo']['title'] }}</a></h2>
+					<span>Authors:</span>
+					{% for author in book['volumeInfo']['authors'] %}
+					<p>{{author}}</p>
+					{% endfor %}
+					<p>Publisher: {{ book['volumeInfo']['publisher'] }} </p>
+					<p>Total Pages: {{ book['volumeInfo']['pageCount'] }} </p>
+					<p>Published Date: {{ book['volumeInfo']['publishedDate'] }} </p>
+					<ul class="actions">
+						<li><a href="{{ url_for('add_to_cart', id=book['id']) }}" class="button primary">Add to cart</a></li>
+						<li><a href="#" class="button primary">&#36; {{ book['saleInfo']['retailPrice']['amount'] }}</a></li>
+						<li><a href="#one" class="button icon solid fa-chevron-down scrolly">Learn More</a></li>
+					</ul>
+
+					{% if message != "": %}
+
+					<div class="alert alert-success" role="alert">
+						{{ message }}
+					</div>
+					{% endif %}
+				</div>
+				<div class="image phone"><div class="inner"><img src="{{ book['volumeInfo']['imageLinks']['thumbnail'] }}" alt="" /></div></div>
+			</header>
+
+		<!-- One -->
+			<section id="one" class="wrapper style2 special">
+				<header class="major">
+					<h2>About Book </h2>
+					<p style="margin:10px 50px 10px 50px;">{{book['volumeInfo']['description']}}</p>
+				</header>
+			</section>
+		<!-- Footer -->
+			<footer id="footer">
+				<p class="copyright">&copy; Book Mart : {{year}}</p>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="single_book/assets/js/jquery.min.js"></script>
+			<script src="single_book/assets/js/jquery.scrolly.min.js"></script>
+			<script src="single_book/assets/js/browser.min.js"></script>
+			<script src="single_book/assets/js/breakpoints.min.js"></script>
+			<script src="single_book/assets/js/util.js"></script>
+			<script src="single_book/assets/js/main.js"></script>
+
+	</body>
+</html>
